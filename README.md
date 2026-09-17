@@ -10,6 +10,7 @@ This repository defines **how technical work is executed**. Project-specific sci
 - [`governance/GITHUB_ACTIONS_EXECUTION.md`](governance/GITHUB_ACTIONS_EXECUTION.md) — commit/push-trigger/compute discipline and temporary trigger policy.
 - [`governance/COMPUTE_HEAVY_WORKFLOWS.md`](governance/COMPUTE_HEAVY_WORKFLOWS.md) — checkpointed architecture, recovery boundaries, lineage, resume, and concurrency for expensive workflows.
 - [`governance/CI_OBSERVABILITY.md`](governance/CI_OBSERVABILITY.md) — minimum logging and sparse progress/heartbeat requirements.
+- [`governance/R2_STORAGE_ENCODING_COMPRESSION.md`](governance/R2_STORAGE_ENCODING_COMPRESSION.md) — representation-only R2/storage optimization, lossless semantic verification, lineage, publish safety, retention, and storage-audit discipline.
 
 ## Scope boundary
 
@@ -21,7 +22,8 @@ Examples of rules that **do belong here**:
 - GitHub Actions trigger/compute governance;
 - CI observability;
 - durable checkpoint/recovery architecture;
-- generic fail-closed and verification rules.
+- generic fail-closed and verification rules;
+- storage representation/compression safety and validation discipline.
 
 Examples of rules that **do not belong here**:
 
@@ -49,6 +51,8 @@ Global governance must never be used to silently change frozen project semantics
 > **Prepare once → commit once → compute once → learn once.**
 
 > **Compute once → persist evidence → validate → reuse safely.**
+
+> **Logical dataset X → more efficient physical representation of X, never X'.**
 
 ## Adoption by project repositories
 
