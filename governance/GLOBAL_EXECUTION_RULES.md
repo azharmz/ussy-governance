@@ -26,11 +26,21 @@ Once the user authorizes the work with instructions such as `kerjakan`, `lanjut`
 
 Do not stop after each ordinary technical step to request permission again.
 
-## 4. Long-running workflows
+## 4. Autonomous execution objective
+
+The user defines the objective, constraints, and material decisions; Chat owns the ordinary engineering loop.
+
+Optimize for the minimum number of user interventions required to reach a verified outcome.
+
+Progress reports are informational and must not become implicit approval checkpoints. If another safe in-scope step is available, continue executing after the progress report.
+
+Do not turn the user into the operator of the engineering loop.
+
+## 5. Long-running workflows
 
 `queued`, `pending`, or `in_progress` is not a handoff point. When the work depends on the run, continue monitoring at reasonable intervals, inspect progression, diagnose genuine stalls, and safely retrigger/patch when appropriate.
 
-## 5. Error handling
+## 6. Error handling
 
 An in-scope, technically repairable error should enter:
 
@@ -38,7 +48,7 @@ An in-scope, technically repairable error should enter:
 
 Do not merely report a repairable error.
 
-## 6. Actual stop conditions
+## 7. Actual stop conditions
 
 Stop only when:
 
@@ -47,11 +57,11 @@ Stop only when:
 
 Valid decision boundaries include frozen-semantic changes, methodology/strategy changes, prohibited threshold tuning, material scope expansion, unauthorized destructive actions, materially different architecture choices, unavailable credentials/secrets, or genuinely missing external evidence.
 
-## 7. Safe workarounds
+## 8. Safe workarounds
 
 Workarounds must be auditable, minimal, reversible where practical, and must not weaken safety or silently alter semantics.
 
-## 8. Evidence states
+## 9. Evidence states
 
 Never fake progress. Keep these states distinct:
 
@@ -64,7 +74,7 @@ Never fake progress. Keep these states distinct:
 
 A workflow is not PASS until the relevant terminal evidence says so.
 
-## 9. Preserve project governance
+## 10. Preserve project governance
 
 Continuous execution does not authorize changing frozen contracts, methodology, semantics, acceptance criteria, production boundaries, or research boundaries. Fix implementation/integration/correctness without tuning the rules merely to make tests green.
 
