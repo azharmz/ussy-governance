@@ -12,7 +12,7 @@ Treat a commit as an intentional compute decision, not merely a save operation.
 
 For push-triggered research/compute workflows:
 
-`INSPECT → PLAN COMPLETE PATCH → EDIT/PREPARE → VERIFY EXPERIMENT-READY → ONE MEANINGFUL COMMIT → ONE INTENTIONAL RUN → MONITOR → EVALUATE`
+`INSPECT → PLAN COMPLETE PATCH → EDIT/PREPARE → VERIFY EXPERIMENT-READY → AUDIT TRIGGER BLAST RADIUS → ONE MEANINGFUL COMMIT → ONE INTENTIONAL TARGET RUN → VERIFY NO UNINTENDED SIBLING RUNS → MONITOR → EVALUATE`
 
 Target:
 
@@ -27,12 +27,34 @@ Avoid avoidable sequences such as formatting commit → run, hardcode cleanup co
 Check:
 
 1. Will this commit trigger a workflow?
-2. Is that compute actually needed now?
-3. Is the patch ready to produce useful evidence?
-4. Are known cleanup/hardcode/config issues still outstanding?
-5. Can related changes safely be batched before the run?
+2. **Exactly which workflows can this commit trigger?**
+3. Is the intended workflow the only workflow that should run?
+4. Is that compute actually needed now?
+5. Is the patch ready to produce useful evidence?
+6. Are known cleanup/hardcode/config issues still outstanding?
+7. Can related changes safely be batched before the run?
 
 If the run is not yet needed, do not intentionally spend compute merely to persist an intermediate edit.
+
+## Trigger blast-radius audit
+
+Before using a push as a dispatch mechanism, inspect the repository's workflow trigger topology.
+
+Determine all workflows that can react to the proposed commit, including:
+
+- branch filters;
+- path/path-ignore filters;
+- workflow chaining such as `workflow_run`;
+- reusable/called workflow relationships where relevant;
+- production publishers or other heavy workflows that could be activated indirectly.
+
+The execution plan must identify the **intended target workflow** and prove that the proposed trigger is isolated enough not to launch unrelated compute.
+
+> **One intentional dispatch commit should produce one intended workflow run, unless multiple runs are explicitly part of the approved design.**
+
+Do not knowingly use a commit as a dispatch mechanism when the same commit can unnecessarily trigger sibling production, backtest, publisher, or other compute-heavy workflows.
+
+After the triggering commit, inspect Actions promptly and verify that no unintended sibling workflows started. If unexpected runs appear, treat that as a trigger-governance defect: cancel them when tooling permits, diagnose the overlap, narrow the trigger, and add regression/documentation protection as appropriate.
 
 ## Hardcode audit
 
@@ -56,11 +78,18 @@ A temporary branch-specific push trigger is valid when autonomous iteration requ
 
 It must be as narrow as practical:
 
-- research branch only;
-- relevant paths only;
-- no broad production/main trigger without explicit architectural need.
+- dedicated/research branch where practical;
+- relevant or dedicated dispatch-marker path only;
+- no broad production/main trigger without explicit architectural need;
+- isolated from sibling workflows as established by the trigger blast-radius audit.
 
-After the workstream is DONE, TERMINAL, or FROZEN, restore manual-only / `workflow_dispatch` unless automatic CI is intentionally part of the repository design.
+A temporary push trigger is a **dispatch mechanism**, not a permanent development trigger. Prepare ordinary code/config changes before enabling or exercising it whenever practical.
+
+If a dedicated dispatch-marker path is used, it must not be watched by unrelated workflows and must not alter production semantics merely to cause a run.
+
+After the required run is triggered, remove/disable the temporary push path as soon as practical. After the workstream is DONE, TERMINAL, or FROZEN, restore manual-only / `workflow_dispatch` unless automatic CI is intentionally part of the repository design.
+
+If no isolated safe push path exists, do not broaden the trigger merely to avoid manual action. At that point, manual dispatch can be a genuine execution boundary.
 
 ## User command interpretation
 
@@ -84,4 +113,4 @@ Never rerun a job as a way to cancel it.
 
 ## Core compute principle
 
-> **prepare once → commit once → compute once → learn once**
+> **prepare once → audit blast radius → commit once → run only intended compute → verify → learn once**
