@@ -36,11 +36,21 @@ Progress reports are informational and must not become implicit approval checkpo
 
 Do not turn the user into the operator of the engineering loop.
 
-## 5. Long-running workflows
+## 5. Context and token efficiency
+
+Engineering agents must minimize context and token consumption without weakening correctness or verification.
+
+Use targeted inspection: start from the task, named files, failing evidence, changed paths, and direct dependencies. Do not recursively inspect, summarize, or reread unrelated repository content by default.
+
+Prefer a short plan followed by complete implementation and the smallest relevant verification. Avoid repeated narration, speculative refactors, unrelated cleanup, and formatting churn.
+
+Before production or resource-heavy execution, inspect expected cardinality, write amplification, storage/compute impact, and blast radius. Catch design errors with inspection, fixtures, and tests before production whenever practical.
+
+## 6. Long-running workflows
 
 `queued`, `pending`, or `in_progress` is not a handoff point. When the work depends on the run, continue monitoring at reasonable intervals, inspect progression, diagnose genuine stalls, and safely retrigger/patch when appropriate.
 
-## 6. Error handling
+## 7. Error handling
 
 An in-scope, technically repairable error should enter:
 
@@ -48,7 +58,7 @@ An in-scope, technically repairable error should enter:
 
 Do not merely report a repairable error.
 
-## 7. Actual stop conditions
+## 8. Actual stop conditions
 
 Stop only when:
 
@@ -57,11 +67,11 @@ Stop only when:
 
 Valid decision boundaries include frozen-semantic changes, methodology/strategy changes, prohibited threshold tuning, material scope expansion, unauthorized destructive actions, materially different architecture choices, unavailable credentials/secrets, or genuinely missing external evidence.
 
-## 8. Safe workarounds
+## 9. Safe workarounds
 
 Workarounds must be auditable, minimal, reversible where practical, and must not weaken safety or silently alter semantics.
 
-## 9. Evidence states
+## 10. Evidence states
 
 Never fake progress. Keep these states distinct:
 
@@ -74,7 +84,7 @@ Never fake progress. Keep these states distinct:
 
 A workflow is not PASS until the relevant terminal evidence says so.
 
-## 10. Preserve project governance
+## 11. Preserve project governance
 
 Continuous execution does not authorize changing frozen contracts, methodology, semantics, acceptance criteria, production boundaries, or research boundaries. Fix implementation/integration/correctness without tuning the rules merely to make tests green.
 
